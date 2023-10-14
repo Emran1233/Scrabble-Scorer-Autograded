@@ -1,6 +1,4 @@
-// This assignment is inspired by a problem on Exercism (https://exercism.org/tracks/javascript/exercises/etl) that demonstrates Extract-Transform-Load using Scrabble's scoring system. 
-
-const input = require("readline-sync");
+//const input = require("readline-sync"); 
 
 const oldPointStructure = {
   1: ['A', 'E', 'I', 'O', 'U', 'L', 'N', 'R', 'S', 'T'],
@@ -10,62 +8,125 @@ const oldPointStructure = {
   5: ['K'],
   8: ['J', 'X'],
   10: ['Q', 'Z']
-};
-
-function oldScrabbleScorer(word) {
-	word = word.toUpperCase();
-	let letterPoints = "";
- 
-	for (let i = 0; i < word.length; i++) {
- 
-	  for (const pointValue in oldPointStructure) {
- 
-		 if (oldPointStructure[pointValue].includes(word[i])) {
-			letterPoints += `Points for '${word[i]}': ${pointValue}\n`
-		 }
- 
-	  }
-	}
-	return letterPoints;
- }
-
-// your job is to finish writing these functions and variables that we've named //
-// don't change the names or your program won't work as expected. //
-
+}; function oldScrabbleScorer(word) {
+  word = word.toUpperCase();
+  let letterPoints = ""; for (let i = 0; i < word.length; i++) {
+     for (const pointValue in oldPointStructure) {
+        if (oldPointStructure[pointValue].includes(word[i])) {
+           letterPoints += `Points for '${word[i]}': ${pointValue}\n`
+        }
+     }
+  }
+  return letterPoints;
+}// your job is to finish writing these functions and variables that we've named //
+// don't change the names or your program won't work as expected. 
 function initialPrompt() {
-   console.log("Let's play some scrabble! Enter a word:");
+  console.log("Let's play some scrabble!");
+  //let intro = input.question('Enter a word to score:');
+  let intro = "Zebra"
+  return intro;
+}
+
+let simpleScorer = function (word) {
+  return word.length;
 };
 
-let simpleScorer;
+let vowelBonusScorer = function (word) {
+  let vowels = ['A', 'E', 'I', 'O', 'U'];
+  let score = 0;
+  word = word.toUpperCase();
+  for (let i = 0; i < word.length; i++) {
+     if (vowels.includes(word[i])) {
+        score += 3;
+     } else {
+        score += 1;
+     }
+  }
+  return score;
+}
 
-let vowelBonusScorer;
+let scrabbleScorer = function (word) {
+  let score = 0;
+  for (let i = 0; i < word.length; i++) {
+     score += Number(newPointStructure[word[i]]);
+  }
+  return score;
+}; const scoringAlgorithms = [
+  {
+     name: "Simple Score",
+     description: "Each letter is worth 1 point",
+     scoreFunction: simpleScorer
+  },
+  {
+     name: "Bonus Vowels",
+     description: "Vowels are 3 pts. Consonants are 1 pt.",
+     scoreFunction: vowelBonusScorer
+  },
+  {
+     name: "Scrabble",
+     description: "The traditinal scoring algorithm",
+     scoreFunction: scrabbleScorer
+  }
+];
 
-let scrabbleScorer;
+function scorerPrompt() {
+  console.log("\nWhich of the scoring algorithms would you like to use?")
+  
+  for (let i = 0; i < scoringAlgorithms.length; i++) {
+     console.log(`${i} - ${scoringAlgorithms[i].name}: ${scoringAlgorithms[i].description}`)
+  } 
+  let scoreQuestion = 2;
+  //let scoreQuestion = Number(input.question(`\nEnter 0, 1, or 2: `));
+  return scoringAlgorithms[scoreQuestion]
+}
 
-const scoringAlgorithms = [];
+function transform(oldPointStructure) {
+  // Loops through each array inside oldPointStructure
+  let newPtObject = {}; // empty array
+  for (let key in oldPointStructure) {
+     for (let i = 0; i < oldPointStructure.length; i++) {
+        newPtObject[oldPointStructure[key][i].toLowerCase()] = Number(key);
+     }
+  }
+  return newPtObject;
+};
 
-function scorerPrompt() {}
-
-function transform() {};
-
-let newPointStructure;
+let newPointStructure = transform(oldPointStructure);
 
 function runProgram() {
-   initialPrompt();
-   
+  initialPrompt();
+  scorerPrompt();
+  scoreGame = scorerPrompt(); 
+  console.log(`Score for ${scoreGame} : ${scoreGame.score}`);
+  console.log(scorerPrompt());
 }
 
 // Don't write any code below this line //
 // And don't change these or your program will not run as expected //
 module.exports = {
-   initialPrompt: initialPrompt,
-   transform: transform,
-   oldPointStructure: oldPointStructure,
-   simpleScorer: simpleScorer,
-   vowelBonusScorer: vowelBonusScorer,
-   scrabbleScorer: scrabbleScorer,
-   scoringAlgorithms: scoringAlgorithms,
-   newPointStructure: newPointStructure,
-	runProgram: runProgram,
-	scorerPrompt: scorerPrompt
-};
+  initialPrompt: initialPrompt,
+  transform: transform,
+  oldPointStructure: oldPointStructure,
+  simpleScorer: simpleScorer,
+  vowelBonusScorer: vowelBonusScorer,
+  scrabbleScorer: scrabbleScorer,
+  scoringAlgorithms: scoringAlgorithms,
+  newPointStructure: newPointStructure,
+  runProgram: runProgram,
+  scorerPrompt: scorerPrompt
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
